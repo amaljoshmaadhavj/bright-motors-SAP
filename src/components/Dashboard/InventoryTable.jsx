@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useStore } from '../../store/useStore';
 import { calculateReorderQty, isBelowRop, getVendorById } from '../../data/inventory';
-import { Search, Filter, Eye, ShoppingCart, Pencil, Check, X } from 'lucide-react';
+import { Search, Filter, Eye, ShoppingCart, Pencil, Check, X, Download } from 'lucide-react';
 import { EmptyState } from '../UI/EmptyState';
+import { exportTableToPDF } from '../../utils/exportPDF';
 
 function InlineEditCell({ item }) {
   const { updateQty } = useStore();
@@ -111,6 +112,26 @@ export function InventoryTable({ onViewItem }) {
     return matchSearch;
   });
 
+  const handleExport = () => {
+    const headers = ['SKU', 'Description', 'Category', 'ROP', 'Current Qty', 'Reorder Qty', 'Status', 'Vendor'];
+    const rows = state.inventory.map(item => {
+      const below = isBelowRop(item);
+      const qty = calculateReorderQty(item.rop, item.currentQty);
+      const vendor = state.inventory.length ? getVendorById(item.vendorId) : null;
+      return [
+        item.id,
+        item.description,
+        item.category,
+        item.rop,
+        item.currentQty,
+        below ? qty : '—',
+        below ? 'REORDER' : 'OK',
+        vendor?.name || '—',
+      ];
+    });
+    exportTableToPDF('Material Inventory Report', headers, rows);
+  };
+
   return (
     <div className="table-container">
       <div className="table-header">
@@ -138,6 +159,10 @@ export function InventoryTable({ onViewItem }) {
               </button>
             ))}
           </div>
+          <button className="action-btn btn-export" onClick={handleExport} title="Download PDF">
+            <Download size={14} />
+            <span>PDF</span>
+          </button>
         </div>
       </div>
 

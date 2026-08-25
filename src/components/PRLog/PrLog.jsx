@@ -1,14 +1,32 @@
 import { useStore } from '../../store/useStore';
-import { FileText } from 'lucide-react';
+import { FileText, Download } from 'lucide-react';
 import { EmptyState } from '../UI/EmptyState';
+import { exportTableToPDF } from '../../utils/exportPDF';
 
 export function PrLog() {
   const { state } = useStore();
 
+  const handleExport = () => {
+    const headers = ['PR Number', 'SKU', 'Description', 'Quantity', 'Vendor', 'Status', 'Est. Delivery', 'Submitted'];
+    const rows = state.purchaseRequests.map(pr => [
+      pr.id,
+      pr.itemId,
+      pr.description,
+      pr.reorderQty,
+      pr.vendorName,
+      pr.status,
+      pr.estimatedDelivery,
+      new Date(pr.submittedAt).toLocaleDateString(),
+    ]);
+    exportTableToPDF('Purchase Request Log', headers, rows);
+  };
+
   if (state.purchaseRequests.length === 0) {
     return (
       <div className="page-container">
-        <h2 className="page-title">Purchase Request Log</h2>
+        <div className="page-title-row">
+          <h2 className="page-title">Purchase Request Log</h2>
+        </div>
         <EmptyState
           icon={FileText}
           title="No Purchase Requests"
@@ -20,7 +38,13 @@ export function PrLog() {
 
   return (
     <div className="page-container">
-      <h2 className="page-title">Purchase Request Log</h2>
+      <div className="page-title-row">
+        <h2 className="page-title">Purchase Request Log</h2>
+        <button className="action-btn btn-export" onClick={handleExport} title="Download PDF">
+          <Download size={14} />
+          <span>PDF</span>
+        </button>
+      </div>
       <div className="table-desktop">
         <table className="sap-table">
           <thead>

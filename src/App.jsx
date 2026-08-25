@@ -46,6 +46,7 @@ function Dashboard() {
 
 export default function App() {
   const [activeView, setActiveView] = useState(getHashView);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const isLoading = useLoadingDelay(1200);
 
   const handleViewChange = useCallback((view) => {
@@ -65,9 +66,14 @@ export default function App() {
   return (
     <StoreProvider>
       <div className="app">
-        <Header />
+        <Header onMenuToggle={() => setSidebarOpen(v => !v)} />
         <div className="app-body">
-          <Sidebar activeView={activeView} onViewChange={handleViewChange} />
+          <Sidebar
+            activeView={activeView}
+            onViewChange={handleViewChange}
+            open={sidebarOpen}
+            onClose={() => setSidebarOpen(false)}
+          />
           <main className="app-main">
             {isLoading ? (
               <DashboardSkeleton />

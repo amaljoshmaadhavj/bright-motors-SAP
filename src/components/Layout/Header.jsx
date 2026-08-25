@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useStore } from '../../store/useStore';
-import { Settings, Bell, User, X, AlertTriangle, CheckCircle, Info } from 'lucide-react';
+import { Settings, Bell, User, X, AlertTriangle, CheckCircle, Info, Menu } from 'lucide-react';
 
-export function Header() {
+export function Header({ onMenuToggle }) {
   const { kpis, state } = useStore();
   const [showNotif, setShowNotif] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -23,6 +23,9 @@ export function Header() {
   return (
     <header className="sap-header">
       <div className="header-left">
+        <button className="hamburger-btn" onClick={onMenuToggle} aria-label="Open navigation">
+          <Menu size={20} />
+        </button>
         <div className="header-logo">
           <div className="logo-icon">BM</div>
           <div className="logo-text">
