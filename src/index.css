@@ -383,7 +383,13 @@ body {
 .inline-edit-wrap {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
+}
+
+.inline-edit-num {
+  min-width: 36px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 .inline-edit-input {

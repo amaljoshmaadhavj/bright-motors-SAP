@@ -51,7 +51,7 @@ function InlineEditCell({ item }) {
 
   return (
     <div className="inline-edit-wrap">
-      <span className={`td-number ${below ? 'qty-low' : 'qty-ok'}`}>
+      <span className={`td-number inline-edit-num ${below ? 'qty-low' : 'qty-ok'}`}>
         {item.currentQty}
       </span>
       <button className="inline-edit-btn" onClick={() => setEditing(true)} title="Edit stock">
