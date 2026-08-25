@@ -641,6 +641,148 @@ body {
 }
 
 /* ============================================
+   Stock Level Chart
+   ============================================ */
+
+.stock-chart-card {
+  background: var(--bgCard);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.stock-chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.stock-chart-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--textPrimary);
+}
+
+.stock-chart-legend {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--textMuted);
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.legend-current {
+  background: var(--sapBlue);
+}
+
+.legend-rop {
+  background: transparent;
+  border: 2px dashed var(--sapWarning);
+}
+
+.stock-chart-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.stock-chart-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.stock-chart-sku {
+  width: 80px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--textPrimary);
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.stock-chart-bars {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.stock-chart-bar-track {
+  flex: 1;
+  height: 18px;
+  background: var(--bgPage);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.stock-chart-bar {
+  height: 100%;
+  border-radius: 4px;
+  min-width: 2px;
+}
+
+.bar-green {
+  background: var(--sapSuccess);
+  opacity: 0.8;
+}
+
+.bar-red {
+  background: var(--sapError);
+  opacity: 0.85;
+}
+
+.stock-chart-rop-line {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+  background: var(--sapWarning);
+  border-left: 2px dashed var(--sapWarning);
+}
+
+.stock-chart-values {
+  display: flex;
+  gap: var(--space-sm);
+  flex-shrink: 0;
+  width: 70px;
+}
+
+.stock-chart-val {
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  min-width: 28px;
+  text-align: right;
+}
+
+.stock-chart-rop-val {
+  font-size: 11px;
+  color: var(--textMuted);
+  font-variant-numeric: tabular-nums;
+  min-width: 28px;
+  text-align: right;
+}
+
+/* ============================================
    Table
    ============================================ */
 
@@ -2006,6 +2148,48 @@ body {
 
   .kpi-card-wide {
     grid-column: span 2;
+  }
+
+  .rules-steps {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 4px;
+    gap: 10px;
+  }
+
+  .rules-steps::-webkit-scrollbar {
+    display: none;
+  }
+
+  .rules-step {
+    min-width: 220px;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+
+  .step-arrow {
+    flex-shrink: 0;
+  }
+
+  .stock-chart-sku {
+    width: 60px;
+    font-size: 10px;
+  }
+
+  .stock-chart-values {
+    width: 60px;
+  }
+
+  .stock-chart-val {
+    font-size: 11px;
+    min-width: 24px;
+  }
+
+  .stock-chart-rop-val {
+    font-size: 10px;
+    min-width: 24px;
   }
 
   .header-right {

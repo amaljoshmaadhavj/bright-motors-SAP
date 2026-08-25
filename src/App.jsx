@@ -4,6 +4,7 @@ import { StoreProvider } from './store/useStore';
 import { Header } from './components/Layout/Header';
 import { Sidebar } from './components/Layout/Sidebar';
 import { KpiCards } from './components/Dashboard/KpiCards';
+import { StockChart } from './components/Dashboard/StockChart';
 import { InventoryTable } from './components/Dashboard/InventoryTable';
 import { ReorderPanel } from './components/Reorder/ReorderPanel';
 import { PrLog } from './components/PRLog/PrLog';
@@ -13,9 +14,9 @@ import { DashboardSkeleton, useLoadingDelay } from './components/UI/Skeleton';
 
 const VALID_VIEWS = ['dashboard', 'pr-log', 'rules'];
 
-function getHashView() {
-  const hash = window.location.hash.replace('#', '');
-  return VALID_VIEWS.includes(hash) ? hash : 'dashboard';
+function getPathView() {
+  const path = window.location.pathname.replace(/^\//, '');
+  return VALID_VIEWS.includes(path) ? path : 'dashboard';
 }
 
 function Dashboard() {
@@ -30,6 +31,7 @@ function Dashboard() {
   return (
     <div className="page-container">
       <KpiCards />
+      <StockChart />
       <InventoryTable onViewItem={handleViewItem} />
       <AnimatePresence>
         {selectedItem && (
@@ -45,22 +47,21 @@ function Dashboard() {
 }
 
 export default function App() {
-  const [activeView, setActiveView] = useState(getHashView);
+  const [activeView, setActiveView] = useState(getPathView);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const isLoading = useLoadingDelay(1200);
 
   const handleViewChange = useCallback((view) => {
     setActiveView(view);
-    window.location.hash = view;
+    window.history.pushState(null, '', `/${view}`);
   }, []);
 
   useEffect(() => {
-    const onHashChange = () => {
-      const view = getHashView();
-      setActiveView(view);
+    const onPopState = () => {
+      setActiveView(getPathView());
     };
-    window.addEventListener('hashchange', onHashChange);
-    return () => window.removeEventListener('hashchange', onHashChange);
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
   }, []);
 
   return (
