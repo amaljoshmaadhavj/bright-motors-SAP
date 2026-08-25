@@ -506,6 +506,7 @@ body {
   transition: all 0.15s;
   text-align: left;
   width: 100%;
+  user-select: none;
 }
 
 .sidebar-item:hover {
@@ -770,6 +771,9 @@ body {
 
 .td-actions {
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .sku-badge {
@@ -866,10 +870,6 @@ body {
 .btn-reorder:hover {
   background: #a00;
   border-color: #a00;
-}
-
-.td-actions .action-btn + .action-btn {
-  margin-left: 6px;
 }
 
 /* Icon-only action button (Review) */

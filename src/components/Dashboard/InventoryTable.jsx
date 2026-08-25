@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useStore } from '../../store/useStore';
 import { calculateReorderQty, isBelowRop, getVendorById } from '../../data/inventory';
-import { Search, Filter, Eye, ShoppingCart, AlertTriangle, Pencil, Check, X } from 'lucide-react';
+import { Search, Filter, Eye, ShoppingCart, Pencil, Check, X } from 'lucide-react';
 import { EmptyState } from '../UI/EmptyState';
 
 function InlineEditCell({ item }) {
@@ -53,7 +53,6 @@ function InlineEditCell({ item }) {
     <div className="inline-edit-wrap">
       <span className={`td-number ${below ? 'qty-low' : 'qty-ok'}`}>
         {item.currentQty}
-        {below && <AlertTriangle size={12} className="qty-alert-icon" />}
       </span>
       <button className="inline-edit-btn" onClick={() => setEditing(true)} title="Edit stock">
         <Pencil size={11} />

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { StoreProvider } from './store/useStore';
 import { Header } from './components/Layout/Header';
@@ -11,10 +11,16 @@ import { BusinessRules } from './components/BusinessRules/BusinessRules';
 import { ToastContainer } from './components/UI/Toast';
 import { DashboardSkeleton, useLoadingDelay } from './components/UI/Skeleton';
 
+const VALID_VIEWS = ['dashboard', 'pr-log', 'rules'];
+
+function getHashView() {
+  const hash = window.location.hash.replace('#', '');
+  return VALID_VIEWS.includes(hash) ? hash : 'dashboard';
+}
+
 function Dashboard() {
   const [selectedItem, setSelectedItem] = useState(null);
   const [reorderMode, setReorderMode] = useState(false);
-  const isLoading = useLoadingDelay(1200);
 
   const handleViewItem = (item, autoReorder = false) => {
     setSelectedItem(item);
@@ -23,14 +29,8 @@ function Dashboard() {
 
   return (
     <div className="page-container">
-      {isLoading ? (
-        <DashboardSkeleton />
-      ) : (
-        <>
-          <KpiCards />
-          <InventoryTable onViewItem={handleViewItem} />
-        </>
-      )}
+      <KpiCards />
+      <InventoryTable onViewItem={handleViewItem} />
       <AnimatePresence>
         {selectedItem && (
           <ReorderPanel
@@ -45,18 +45,39 @@ function Dashboard() {
 }
 
 export default function App() {
-  const [activeView, setActiveView] = useState('dashboard');
+  const [activeView, setActiveView] = useState(getHashView);
+  const isLoading = useLoadingDelay(1200);
+
+  const handleViewChange = useCallback((view) => {
+    setActiveView(view);
+    window.location.hash = view;
+  }, []);
+
+  useEffect(() => {
+    const onHashChange = () => {
+      const view = getHashView();
+      setActiveView(view);
+    };
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
 
   return (
     <StoreProvider>
       <div className="app">
         <Header />
         <div className="app-body">
-          <Sidebar activeView={activeView} onViewChange={setActiveView} />
+          <Sidebar activeView={activeView} onViewChange={handleViewChange} />
           <main className="app-main">
-            {activeView === 'dashboard' && <Dashboard />}
-            {activeView === 'pr-log' && <PrLog />}
-            {activeView === 'rules' && <BusinessRules />}
+            {isLoading ? (
+              <DashboardSkeleton />
+            ) : (
+              <>
+                {activeView === 'dashboard' && <Dashboard />}
+                {activeView === 'pr-log' && <PrLog />}
+                {activeView === 'rules' && <BusinessRules />}
+              </>
+            )}
           </main>
         </div>
         <ToastContainer />
