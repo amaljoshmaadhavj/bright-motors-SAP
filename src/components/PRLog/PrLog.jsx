@@ -6,6 +6,9 @@ import { exportTableToPDF } from '../../utils/exportPDF';
 export function PrLog() {
   const { state } = useStore();
 
+  const activePrs = state.purchaseRequests.filter(p => p.status === 'Submitted');
+  const totalUnits = state.purchaseRequests.reduce((sum, pr) => sum + pr.reorderQty, 0);
+
   const handleExport = () => {
     const headers = ['PR Number', 'SKU', 'Description', 'Quantity', 'Vendor', 'Status', 'Est. Delivery', 'Submitted'];
     const rows = state.purchaseRequests.map(pr => [
@@ -44,6 +47,17 @@ export function PrLog() {
           <Download size={14} />
           <span>PDF</span>
         </button>
+      </div>
+      <div className="pr-summary-bar">
+        <div className="pr-summary-item">
+          <span className="pr-summary-value">{activePrs.length}</span>
+          <span className="pr-summary-label">Active PR{activePrs.length !== 1 ? 's' : ''}</span>
+        </div>
+        <div className="pr-summary-divider" />
+        <div className="pr-summary-item">
+          <span className="pr-summary-value">{totalUnits.toLocaleString()}</span>
+          <span className="pr-summary-label">Total Units Requested</span>
+        </div>
       </div>
       <div className="table-desktop">
         <table className="sap-table">

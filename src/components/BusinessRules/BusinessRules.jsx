@@ -29,7 +29,7 @@ export function BusinessRules() {
           <div className="step-num">1</div>
           <div className="step-content">
             <h4>Identify</h4>
-            <p>Dashboard shows all items where <strong>Current Qty &lt; ROP</strong> in red.</p>
+            <p>Dashboard shows all items where Current Qty is below ROP in red.</p>
           </div>
         </div>
         <ArrowRight size={18} className="step-arrow" />
@@ -37,7 +37,7 @@ export function BusinessRules() {
           <div className="step-num">2</div>
           <div className="step-content">
             <h4>Review &amp; Adjust</h4>
-            <p>Click <strong>Reorder</strong> to see details, AI recommendation, and edit quantity if needed.</p>
+            <p>Click Reorder to see details, AI recommendation, and edit quantity if needed.</p>
           </div>
         </div>
         <ArrowRight size={18} className="step-arrow" />
@@ -63,7 +63,7 @@ export function BusinessRules() {
           <tbody>
             <tr>
               <td><code>SKU</code></td>
-              <td>Unique material ID, e.g. <strong>PAD-X200</strong></td>
+              <td>Unique material identifier</td>
             </tr>
             <tr>
               <td><code>Description</code></td>
@@ -79,7 +79,7 @@ export function BusinessRules() {
             </tr>
             <tr>
               <td><code>Reorder Qty</code></td>
-              <td>Suggested order amount = (ROP &times; 1.2) &minus; Current Qty</td>
+              <td>Suggested order amount &mdash; formula shown above</td>
             </tr>
             <tr>
               <td><code>Plant / Loc</code></td>
@@ -141,7 +141,7 @@ export function BusinessRules() {
         <div className="rules-indicators">
           <div className="rules-indicator">
             <CheckCircle size={14} className="qty-ok" />
-            <span>Click the <strong>pencil icon</strong> next to Current Qty to update physical counts after a stock check.</span>
+            <span>Click the pencil icon next to Current Qty to update physical counts after a stock check.</span>
           </div>
           <div className="rules-indicator">
             <Clock size={14} style={{ color: 'var(--textMuted)' }} />
