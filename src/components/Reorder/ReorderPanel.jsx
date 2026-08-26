@@ -6,7 +6,7 @@ import { useAiRecommendation } from '../../hooks/useAiRecommendation';
 import { X, ShoppingCart, Bot, AlertTriangle, CheckCircle, ArrowLeft } from 'lucide-react';
 
 export function ReorderPanel({ item, reorderMode, onClose }) {
-  const { submitReorder } = useStore();
+  const { submitReorder, state } = useStore();
   const { recommendation, loading: aiLoading, getRecommendation } = useAiRecommendation();
 
   const [reorderQty, setReorderQty] = useState('');
@@ -18,6 +18,10 @@ export function ReorderPanel({ item, reorderMode, onClose }) {
   const suggestedQty = calculateReorderQty(item.rop, item.currentQty);
   const vendor = getVendorById(selectedVendor);
 
+  const hasActivePr = state.purchaseRequests.some(
+    pr => pr.itemId === item.id && pr.status === 'Submitted'
+  );
+
   useEffect(() => {
     if (reorderMode) setReorderQty(String(suggestedQty));
   }, [reorderMode, suggestedQty]);
@@ -27,13 +31,26 @@ export function ReorderPanel({ item, reorderMode, onClose }) {
   }, [item, getRecommendation]);
 
   const validateQty = (val) => {
-    const n = parseInt(val, 10);
-    if (isNaN(n) || n <= 0) {
-      setQtyError('Quantity must be a positive whole number.');
+    if (val === '' || val === null || val === undefined) {
+      setQtyError('');
+      return false;
+    }
+    const raw = String(val).trim();
+    if (raw.includes('.')) {
+      setQtyError('Quantity must be a whole number — decimals are not allowed.');
+      return false;
+    }
+    const n = parseInt(raw, 10);
+    if (isNaN(n)) {
+      setQtyError('Enter a valid number.');
+      return false;
+    }
+    if (n <= 0) {
+      setQtyError('Quantity must be greater than zero.');
       return false;
     }
     if (n > item.rop * 3) {
-      setQtyError(`Quantity exceeds 3× ROP (${item.rop * 3}). This seems unusual.`);
+      setQtyError(`Maximum allowed is ${item.rop * 3} (3× ROP). Entered value is too high.`);
       return false;
     }
     setQtyError('');
@@ -41,6 +58,10 @@ export function ReorderPanel({ item, reorderMode, onClose }) {
   };
 
   const handleSubmit = () => {
+    if (hasActivePr) {
+      setQtyError('An active PR already exists for this SKU. Wait for it to be fulfilled or cancelled.');
+      return;
+    }
     if (!validateQty(reorderQty)) return;
     const success = submitReorder(item.id, parseInt(reorderQty, 10), selectedVendor, notes);
     if (success) {
@@ -204,6 +225,13 @@ export function ReorderPanel({ item, reorderMode, onClose }) {
                 >
                   <h3>Submit Purchase Request</h3>
 
+                  {hasActivePr && (
+                    <div className="status-msg status-msg-alert" style={{ marginBottom: 12 }}>
+                      <AlertTriangle size={16} />
+                      <span>An active PR already exists for {item.id}. Submitting a duplicate is not allowed.</span>
+                    </div>
+                  )}
+
                   <div className="form-group">
                     <label className="form-label">Reorder Quantity (suggested: {suggestedQty})</label>
                     <input
@@ -261,7 +289,7 @@ export function ReorderPanel({ item, reorderMode, onClose }) {
                     <button
                       className="panel-btn primary"
                       onClick={handleSubmit}
-                      disabled={!reorderQty || !!qtyError}
+                      disabled={!reorderQty || !!qtyError || hasActivePr}
                     >
                       <ShoppingCart size={16} />
                       Submit Reorder

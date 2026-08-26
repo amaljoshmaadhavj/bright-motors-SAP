@@ -77,6 +77,13 @@ export function StoreProvider({ children }) {
       addToast({ type: 'error', message: 'Reorder quantity must be a positive number.' });
       return false;
     }
+    const hasActive = state.purchaseRequests.some(
+      pr => pr.itemId === itemId && pr.status === 'Submitted'
+    );
+    if (hasActive) {
+      addToast({ type: 'error', message: `An active PR already exists for ${itemId}. Cannot create a duplicate.` });
+      return false;
+    }
     try {
       dispatch({ type: ACTIONS.SUBMIT_REORDER, payload: { itemId, reorderQty: qty, vendorId, notes } });
       addToast({ type: 'success', message: `Purchase request submitted for ${itemId}. Quantity: ${qty} units.` });
@@ -85,7 +92,7 @@ export function StoreProvider({ children }) {
       addToast({ type: 'error', message: 'Failed to submit reorder. Please try again.' });
       return false;
     }
-  }, [addToast]);
+  }, [addToast, state.purchaseRequests]);
 
   const updateQty = useCallback((itemId, newQty) => {
     const qty = parseInt(newQty, 10);
